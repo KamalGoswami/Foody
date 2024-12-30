@@ -55,6 +55,7 @@ class _SignUpState extends State<SignUp> {
           'https://www.flaticon.com/free-icon/user_149071?term=user&page=1&position=11&origin=search&related_id=149071',
         });
 
+        // Show a success message
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           backgroundColor: AppWidget.successColor,
           content: Text('Registered Successfully'),
@@ -62,15 +63,26 @@ class _SignUpState extends State<SignUp> {
 
         // Navigate to the BottomNav page
         if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BottomNav(
-                userId: userId,
-                userName: name,
+          try {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BottomNav(
+                  userId: userId,
+                  userName: name,
+                ),
               ),
-            ),
-          );
+            );
+          } catch (error) {
+            // Show an error SnackBar if navigation fails
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: AppWidget.errorColor,
+              content: Text(
+                'Registration succeeded',
+                style: AppWidget.subTextFieldStyle(),
+              ),
+            ));
+          }
         }
       }
     } on AuthException catch (e) {
@@ -91,7 +103,7 @@ class _SignUpState extends State<SignUp> {
       ));
     } finally {
       setState(() {
-        isLoading = false; // Stop showing the spinner
+        isLoading = false;
       });
     }
   }
@@ -157,13 +169,8 @@ class _SignUpState extends State<SignUp> {
                                   color: AppWidget.primaryColor),
                               labelText: 'E-mail',
                               border: OutlineInputBorder(
-                                borderSide: const BorderSide(width: 1.2),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: AppWidget.primaryColor, width: 2),
-                                borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(width: 1.2),
+                              borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                           ),
