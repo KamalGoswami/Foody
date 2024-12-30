@@ -230,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
               color: Colors.black54,
               child: Center(
                 child: Lottie.asset(
-                  'Assets/Animation/Loading_Animation.json',
+                  'assets/Animations/Loading.json',
                   fit: BoxFit.contain,
                   repeat: true,
                 ),

@@ -21,7 +21,7 @@ class SocialButtons extends StatelessWidget {
               icon: const Image(
                   width: AppWidget.iconMd,
                   height: AppWidget.iconMd,
-                  image: AssetImage('Assets/Images/SocailMediaButton/google.png'))),
+                  image: AssetImage('assets/Images/SocialMedia/google.png'))),
         )
       ],
     );

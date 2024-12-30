@@ -114,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 radius: 30,
                 backgroundImage: profile != null
                     ? NetworkImage(profile!)
-                    : const AssetImage('Assets/Images/User/user.png')
+                    : const AssetImage('assets/Images/User/user.png')
                 as ImageProvider,
               ),
               title: Text(
