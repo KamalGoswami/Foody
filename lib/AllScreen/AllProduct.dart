@@ -36,7 +36,7 @@ class Allproduct extends StatelessWidget {
               onChanged: (value) {},
             ),
             const SizedBox(height: AppWidget.spaceBtwSections,),
-            GridLayoutView(itemCount: 20, itemBuilder: (_,index)=>const ProductCardVertical())
+            GridLayoutView(itemCount: 20, itemBuilder: (_,index)=>const ProductCardVertical(ds: {},))
           ],
         ),
       ),

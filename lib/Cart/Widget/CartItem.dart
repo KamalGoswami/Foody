@@ -16,12 +16,12 @@ class TCartItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const DetailsScreen()));
+            context, MaterialPageRoute(builder: (context) => DetailsScreen(details: '', image: '', name: '', price: '', brand: '',)));
       },
       child: Row(
         children: [
           FRoundImage(
-            imageUrl: 'Assets/Images/ProductImage/HBergur.png',
+            imageUrl: 'assets/Images/ProductImages/butter-chicken.jpg',
             width: 70,
             height: 70,
             padding: const EdgeInsets.all(AppWidget.sm),
@@ -36,9 +36,9 @@ class TCartItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const BrandTitleText(title: 'KFC'),
-                Flexible(
+                const Flexible(
                     child: ProductTitleText(
-                      title: 'Bergur',
+                      title: 'Berger',
                       maxLines: 1,
                     )),
                 Text.rich(TextSpan(

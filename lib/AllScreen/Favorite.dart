@@ -51,7 +51,7 @@ class FavoriteScreen extends StatelessWidget {
             child: CustomElevatedButton(
               onPressed: () {
                 // Navigate to the shopping screen or other action
-                Navigator.push(context,MaterialPageRoute(builder: (context)=>const BottomNav(userId: '', userName: '',)));
+                Navigator.push(context,MaterialPageRoute(builder: (context)=>const BottomNav()));
               },
               text: 'Continue Shopping',
             ),

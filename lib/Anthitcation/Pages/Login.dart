@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:foode/Anthitcation/Pages/ForgetPassword.dart';
+import 'package:foode/Anthitcation/AnthService.dart';
+import 'package:foode/Widget/BottomNav.dart';
 import 'package:lottie/lottie.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../Widget/AppWidget.dart';
-import '../../Widget/BottomNav.dart';
 import '../../Widget/CustomElevatedButton.dart';
 import '../Widget/AnthHeader.dart';
-import '../Widget/FromDivider.dart';
-import '../Widget/ScailMediaButton.dart';
+import 'ForgetPassword.dart';
 import 'SignUp.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,47 +16,42 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
+  final authService = AuthService();
   bool _isPasswordVisible = false;
   bool _isLoading = false;
-  String email = "";
-  String password = "";
-
   final TextEditingController userEmailController = TextEditingController();
   final TextEditingController userPasswordController = TextEditingController();
 
-  Future<void> userLogin(BuildContext context) async {
+  userlogin() async {
+    final email = userEmailController.text;
+    final password = userPasswordController.text;
+
     setState(() {
-      _isLoading = true;
+      _isLoading = true; // Start loading animation
     });
 
     try {
-      final response = await Supabase.instance.client.auth.signInWithPassword(
-        email: email,
-        password: password,);
+      await authService.signInWithEmailPassword(email, password);
 
-      if (response.user != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Welcome back, ${response.user!.userMetadata?['name']}!")),
-        );
+
+      await Future.delayed(const Duration(seconds: 2));
+
+      if (mounted) {
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => BottomNav(
-              userId: response.user!.id,
-              userName: response.user!.userMetadata?['name'] ?? "User",
-            ),
+            builder: (context) => const BottomNav(),
           ),
         );
-      } else {
-        throw Exception("Login failed. Please check your email and password.");
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.red,
-        content: Text('Login failed. ${e.toString()}'),
-      ));
+      if (mounted) {
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e")),
+        );
+      }
     } finally {
       setState(() {
         _isLoading = false;
@@ -82,17 +75,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       vertical: AppWidget.spaceBtwSections,
                     ),
                     child: Form(
-                      key: _formKey,
                       child: Column(
                         children: [
                           TextFormField(
                             controller: userEmailController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please Enter Email';
-                              }
-                              return null;
-                            },
                             decoration: InputDecoration(
                               prefixIcon: const Icon(
                                 Icons.email_outlined,
@@ -114,12 +100,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextFormField(
                             controller: userPasswordController,
                             obscureText: !_isPasswordVisible,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please Enter Password';
-                              }
-                              return null;
-                            },
                             decoration: InputDecoration(
                               prefixIcon: const Icon(
                                 Icons.lock_outline,
@@ -134,8 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                                 icon: Icon(
                                   _isPasswordVisible
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
                                 ),
                               ),
                               border: OutlineInputBorder(
@@ -172,26 +152,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: AppWidget.spaceBtwSections,
                           ),
                           CustomElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                setState(() {
-                                  email = userEmailController.text.trim();
-                                  password = userPasswordController.text.trim();
-                                });
-                                userLogin(context);
-                              }
-                            },
+                            onPressed: userlogin, // Call the login function
                             text: 'Log In',
                           ),
                           const SizedBox(
-                            height: AppWidget.defaultSpace * 2,
+                            height: AppWidget.defaultSpace * 4,
                           ),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const SignUp(),
+                                  builder: (context) => const SignUpScreen(),
                                 ),
                               );
                             },
@@ -216,26 +188,27 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  const FormDivider(dividerText: 'Or Sign In With'),
                   const SizedBox(
                     height: AppWidget.defaultSpace,
                   ),
-                  const SocialButtons(),
                 ],
               ),
             ),
           ),
+
+          // Loading Overlay
           if (_isLoading)
             Container(
-              color: Colors.black54,
+              color: Colors.black.withOpacity(0.5),
               child: Center(
                 child: Lottie.asset(
                   'assets/Animations/Loading.json',
                   fit: BoxFit.contain,
                   repeat: true,
                 ),
+                ),
               ),
-            ),
+
         ],
       ),
     );

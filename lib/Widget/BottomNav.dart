@@ -1,8 +1,6 @@
 
 import 'package:curved_navigation_bar_with_label/curved_navigation_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../AllScreen/Favorite.dart';
 import '../Cart/Pages/Cart.dart';
 import '../Home/Pages/Home.dart';
@@ -10,10 +8,8 @@ import '../Profile/Pages/Profile.dart';
 import 'AppWidget.dart';
 
 class BottomNav extends StatefulWidget {
-  final String userId;
 
-  final String userName;
-  const BottomNav({super. key, required this.userId, required this.userName});
+  const BottomNav({super.key});
 
   @override
   State<BottomNav> createState() => BottomNavState();
@@ -26,7 +22,7 @@ class BottomNavState extends State<BottomNav> {
   @override
   void initState() {
     pages = [
-      HomeScreen(userId: widget.userId),
+      const HomeScreen(),
       const CartScreen(),
       const FavoriteScreen(),
       const ProfileScreen(),

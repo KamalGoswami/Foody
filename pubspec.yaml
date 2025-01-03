@@ -17,8 +17,17 @@ dependencies:
   carousel_slider: ^5.0.0
   lottie: ^3.0.0
   random_string: ^2.3.1
-  supabase_flutter:
+  supabase_flutter: ^2.8.2
   cupertino_icons: ^1.0.8
+  image_picker: ^1.1.2
+  shared_preferences: ^2.3.4
+  cached_network_image: ^3.2.3
+  get: ^4.6.6
+  provider: ^6.1.2
+  url_launcher: ^6.1.10
+
+
+
 
 dev_dependencies:
   flutter_test:
@@ -36,7 +45,7 @@ flutter:
     - assets/Images/ImageSlider/
     - assets/Images/ProductImages/
     - assets/Images/SocialMedia/
-    - assets/Images/User/
+    - assets/Images/User/user.png
 
   # Fonts section
   fonts:

@@ -1,112 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:foode/Anthitcation/AnthService.dart';
+import 'package:foode/Anthitcation/Widget/AnthHeader.dart';
+import 'package:foode/Services/SharedPrefancehelper.dart';
+import 'package:foode/Widget/BottomNav.dart';
 import 'package:lottie/lottie.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:random_string/random_string.dart';
 import '../../Widget/AppWidget.dart';
-import '../../Widget/BottomNav.dart';
 import '../../Widget/CustomElevatedButton.dart';
-import '../Widget/AnthHeader.dart';
-import '../Widget/FromDivider.dart';
-import '../Widget/ScailMediaButton.dart';
 import 'Login.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _SignUpState extends State<SignUp> {
-  String email = "", password = "", name = "";
-  bool _isPasswordVisible = false; // For showing/hiding the password
-  bool isLoading = false; // For showing the loading indicator
+class _SignUpScreenState extends State<SignUpScreen> {
+  final authService = AuthService();
+  bool _isPasswordVisible = false;
+  bool _isLoading = false;
+  final TextEditingController userEmailController = TextEditingController();
+  final TextEditingController userPasswordController = TextEditingController();
+  final TextEditingController userNameController = TextEditingController();
 
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
+  usersignup() async {
+    final email = userEmailController.text;
+    final password = userPasswordController.text;
+    final name = userNameController.text;
+    final Id = randomAlphaNumeric(100);
 
-  final _formKey = GlobalKey<FormState>();
-
-  // Supabase Client
-  final supabase = Supabase.instance.client;
-
-  // Registration function
-  Future<void> registration() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
 
     try {
-      final response = await supabase.auth.signUp(
-        email: email,
-        password: password,
-        data: {'name': name},
-      );
+      await authService.signUpWithEmailPassword(email, password, name);
 
-      if (response.user != null) {
-        final userId = response.user!.id;
+      await SharedPreferencesHelper().saveUserId(Id);
+      await SharedPreferencesHelper().saveUserEmail(email);
+      await SharedPreferencesHelper().saveUserName(name);
+      await SharedPreferencesHelper().saveUserImage('assets/Images/Categories/ByDefaultProfile.png');
 
-        // Save user details to Supabase
-        await supabase.from('users').insert({
-          'id': userId,
-          'name': name,
-          'email': email,
-          'image':
-          'https://www.flaticon.com/free-icon/user_149071?term=user&page=1&position=11&origin=search&related_id=149071',
-        });
+      Map<String, dynamic> userInfoMap = {
+        "Name": name,
+        "Email": email,
+        "Id": Id,
+        "Image": "assets/Images/Categories/ByDefaultProfile.png",
+      };
 
-        // Show a success message
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          backgroundColor: AppWidget.successColor,
-          content: Text('Registered Successfully'),
-        ));
+      await Future.delayed(const Duration(seconds: 2));
 
-        // Navigate to the BottomNav page
-        if (mounted) {
-          try {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BottomNav(
-                  userId: userId,
-                  userName: name,
-                ),
-              ),
-            );
-          } catch (error) {
-            // Show an error SnackBar if navigation fails
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              backgroundColor: AppWidget.errorColor,
-              content: Text(
-                'Registration succeeded',
-                style: AppWidget.subTextFieldStyle(),
-              ),
-            ));
-          }
-        }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Sign-Up Successful!")),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const BottomNav()),
+        );
       }
-    } on AuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: AppWidget.errorColor,
-        content: Text(
-          e.message,
-          style: AppWidget.subTextFieldStyle(),
-        ),
-      ));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: AppWidget.errorColor,
-        content: Text(
-          'Registration failed. Please try again.',
-          style: AppWidget.subTextFieldStyle(),
-        ),
-      ));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e")),
+        );
+      }
     } finally {
       setState(() {
-        isLoading = false;
+        _isLoading = false;
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -118,153 +84,132 @@ class _SignUpState extends State<SignUp> {
               padding: AppWidget.PaddingWithAppBarHeight,
               child: Column(
                 children: [
-                  const LoginHeader(
-                    title: 'Create Your Account',
-                    subtitle: 'Sign Up and get Started',
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: AppWidget.spaceBtwSections),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            controller: nameController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your name';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.person_outline,
-                                  color: AppWidget.primaryColor),
-                              labelText: 'User Name',
-                              border: OutlineInputBorder(
-                                borderSide: const BorderSide(width: 1.2),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: AppWidget.primaryColor, width: 2),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
+                  const SizedBox(height: AppWidget.defaultSpace),
+                  const LoginHeader(title: 'Create Your Account',
+                  subtitle: 'Sign Up and get Started',),
+                  const SizedBox(height: AppWidget.spaceBtwSections),
+                  Form(
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: userNameController,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(
+                              Icons.person_outline,
+                              color: AppWidget.primaryColor,
                             ),
-                          ),
-                          const SizedBox(height: AppWidget.spaceBtwInputFields),
-                          TextFormField(
-                            controller: emailController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your email';
-                              } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                                  .hasMatch(value)) {
-                                return 'Invalid email address';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.email_outlined,
-                                  color: AppWidget.primaryColor),
-                              labelText: 'E-mail',
-                              border: OutlineInputBorder(
-                              borderSide: const BorderSide(width: 1.2),
+                            labelText: 'Full Name',
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.grey),
                               borderRadius: BorderRadius.circular(10),
-                              ),
                             ),
-                          ),
-                          const SizedBox(height: AppWidget.spaceBtwInputFields),
-                          TextFormField(
-                            controller: passwordController,
-                            obscureText: !_isPasswordVisible,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your password';
-                              } else if (value.length < 6) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.lock_outline,
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
                                   color: AppWidget.primaryColor),
-                              labelText: 'Password',
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _isPasswordVisible
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _isPasswordVisible = !_isPasswordVisible;
-                                  });
-                                },
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide: const BorderSide(width: 1.2),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: AppWidget.primaryColor, width: 2),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          const SizedBox(height: AppWidget.spaceBtwSections),
-                          CustomElevatedButton(
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
+                        ),
+                        const SizedBox(height: AppWidget.spaceBtwInputFields),
+                        TextFormField(
+                          controller: userEmailController,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(
+                              Icons.email_outlined,
+                              color: AppWidget.primaryColor,
+                            ),
+                            labelText: 'E-mail',
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: AppWidget.primaryColor),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppWidget.spaceBtwInputFields),
+                        TextFormField(
+                          controller: userPasswordController,
+                          obscureText: !_isPasswordVisible,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(
+                              Icons.lock_outline,
+                              color: AppWidget.primaryColor,
+                            ),
+                            labelText: 'Password',
+                            suffixIcon: IconButton(
+                              onPressed: () {
                                 setState(() {
-                                  email = emailController.text.trim();
-                                  name = nameController.text.trim();
-                                  password = passwordController.text.trim();
+                                  _isPasswordVisible = !_isPasswordVisible;
                                 });
-                                await registration();
-                              }
-                            },
-                            text: 'Create Account',
-                          ),
-                          const SizedBox(height: AppWidget.defaultSpace * 2),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const LoginScreen(),
-                                ),
-                              );
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text("Already have an account? ",
-                                    style: AppWidget.subBoldTextFieldStyle()),
-                                Text('Log In',
-                                    style: AppWidget.LinkBoldFieldStyle()),
-                              ],
+                              },
+                              icon: Icon(
+                                _isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: AppWidget.primaryColor),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          const SizedBox(height: AppWidget.spaceBtwSections),
-                          const FormDivider(dividerText: 'Or Sign In With'),
-                          const SizedBox(height: AppWidget.spaceBtwSections),
-                          const SocialButtons(),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(
+                          height: AppWidget.spaceBtwSections,
+                        ),
+                        CustomElevatedButton(
+                          onPressed: usersignup, // Call the signup function
+                          text: 'Sign Up',
+                        ),
+                        const SizedBox(
+                          height: AppWidget.defaultSpace * 4,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()),
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Already have an account? ",
+                                style: AppWidget.subBoldTextFieldStyle(),
+                              ),
+                              Text(
+                                'Log In',
+                                style: AppWidget.LinkBoldFieldStyle(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          if (isLoading)
+
+          // Loading Overlay
+          if (_isLoading)
             Container(
-              color: Colors.black54,
+              color: Colors.black.withOpacity(0.5),
               child: Center(
-                child: Lottie.asset(
-                  'Assets/Animation/Loading_Animation.json',
+                child:Lottie.asset(
+                  'assets/Animations/Loading.json',
                   fit: BoxFit.contain,
                   repeat: true,
                 ),

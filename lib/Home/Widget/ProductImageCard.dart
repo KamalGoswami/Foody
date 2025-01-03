@@ -18,7 +18,7 @@ class ImageHorizontalProduct extends StatefulWidget {
 
 class _ImageHorizontalProductState extends State<ImageHorizontalProduct> {
   bool isFavorited = false;
-  int currentSlide = 0; // Track the current visible item
+  int currentSlide = 0;
   final PageController _pageController = PageController();
 
   @override
@@ -56,20 +56,20 @@ class _ImageHorizontalProductState extends State<ImageHorizontalProduct> {
         ),
         const SizedBox(height: AppWidget.spaceBtwItems*1.5),
         SizedBox(
-          height: 324, // Adjust height to fit the content
+          height: 324,
           child: PageView.builder(
             controller: _pageController,
-            itemCount: 3, // Display three identical items
+            itemCount: 3,
             onPageChanged: (index) {
               setState(() {
-                currentSlide = index; // Update current slide
+                currentSlide = index;
               });
             },
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Container(
-                  width: 100, // Set a fixed width for each item
+                  width: 100,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(
                       AppWidget.productImageRadius,
@@ -81,17 +81,21 @@ class _ImageHorizontalProductState extends State<ImageHorizontalProduct> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const DetailsScreen()));
+                              builder: (context) => DetailsScreen(details: '', name: '', price: '', image: '', brand: '',)));
                     },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Stack(
                           children: [
-                            const FRoundImage(
-                              imageUrl: 'Assets/Images/ProductImage/Momos.jpg',
-                              height: 240,
-                              width: 550,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(AppWidget.productImageRadius),
+                              child: const FRoundImage(
+                                imageUrl: 'assets/Images/ProductImages/mexican-pizza.jpg',
+                                height: 240,
+                                width: 550,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                             Positioned(
                               top: 8,
@@ -128,7 +132,7 @@ class _ImageHorizontalProductState extends State<ImageHorizontalProduct> {
                                     color: Colors.white,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withOpacity(0.5),
+                                        color: Colors.black.withOpacity(0.2),
                                         blurRadius: 4,
                                         spreadRadius: 2,
                                       ),

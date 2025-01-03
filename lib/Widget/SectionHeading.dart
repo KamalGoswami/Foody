@@ -18,12 +18,15 @@ class SectionHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(title,style: AppWidget.subBoldFieldStyle(),maxLines: 1,overflow: TextOverflow.ellipsis,),
-        if(showActionButton)TextButton(onPressed: onPressed, child: Text(buttonTitle,style: AppWidget.subTextFieldStyle()))
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0,left: 8.0,bottom: 0,top: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title,style: AppWidget.AddToCartText2(),maxLines: 1,overflow: TextOverflow.ellipsis,),
+          if(showActionButton)TextButton(onPressed: onPressed, child: Text(buttonTitle,style: AppWidget.subTextFieldStyle()))
+        ],
+      ),
     );
   }
 }

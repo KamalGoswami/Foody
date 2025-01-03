@@ -20,22 +20,23 @@ class CartScreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-          padding: const EdgeInsets.all(AppWidget.defaultSpace),
-          child: Fcartitems(
-            showAddRemoveButton: true,
-          )),
-      bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(
-            bottom: AppWidget.defaultSpace,
-            right: AppWidget.defaultSpace,
-            left: AppWidget.defaultSpace,
-          ),
-          child: CustomElevatedButton(
-              onPressed: () {
-                //Navigator.push(context,
-                  //  MaterialPageRoute(builder: (context) => const Checkout()));
-              },
-              text: 'Checkout \$250.0')),
+          padding: EdgeInsets.all(AppWidget.defaultSpace),
+          child:Center(child: Text('           This future is not\n    available right now Maybe\n  UpComing Update Available',style: AppWidget.AppBarColorTextStyle(),)),//Fcartitems(
+            //showAddRemoveButton: true,
+        // )),
+      //ottomNavigationBar: Padding(
+      //   padding: const EdgeInsets.only(
+      //     bottom: AppWidget.defaultSpace,
+      //     right: AppWidget.defaultSpace,
+      //     left: AppWidget.defaultSpace,
+      //   ),
+      //   child: CustomElevatedButton(
+      //       onPressed: () {
+      //         //Navigator.push(context,
+      //           //  MaterialPageRoute(builder: (context) => const Checkout()));
+      //       },
+      //       text: 'Checkout \$250.0')),
+      )
     );
   }
 }

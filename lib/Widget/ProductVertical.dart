@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import '../AllScreen/Datiles.dart';
 import '../AllScreen/Favorite.dart';
+import '../main.dart';
 import 'AppWidget.dart';
 import 'BrandTitle.dart';
 import 'ProductPrice.dart';
 import 'ProuductTitle.dart';
-import 'RoundImag.dart';
 import 'RoundedContainer.dart';
 
 class ProductCardVertical extends StatefulWidget {
-  const ProductCardVertical({super.key});
+  final Map<String, dynamic> ds;
+  const ProductCardVertical({required this.ds, super.key});
 
   @override
   State<ProductCardVertical> createState() => _ProductCardVerticalState();
@@ -20,49 +21,57 @@ class _ProductCardVerticalState extends State<ProductCardVertical> {
 
   @override
   Widget build(BuildContext context) {
+
+    final imageUrl = widget.ds['image'] ?? '';
+    final validImageUrl = supabase.storage
+        .from('foody')
+        .getPublicUrl(imageUrl)
+        .toString();
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const DetailsScreen()),
+          MaterialPageRoute(builder: (context) => DetailsScreen(details: '', name: '', image: '', price: '', brand: '',)),
         );
       },
       child: Container(
-        width: 180,
-        padding: const EdgeInsets.all(1),
+        width: 205,
+        padding: const EdgeInsets.all(AppWidget.spaceBtwItemsSm / 2),
         decoration: BoxDecoration(
-          // Adding elevation with BoxShadow
           borderRadius: BorderRadius.circular(AppWidget.productImageRadius),
           color: Colors.grey[100],
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             RoundedContainer(
-              height: 180,
-              padding: const EdgeInsets.all(AppWidget.sm),
+              padding: const EdgeInsets.all(2),
               backgroundColor: AppWidget.lightContainerColor,
               child: Stack(
                 children: [
-                  const FRoundImage(
-                    imageUrl: 'Assets/Images/ProductImage/PizaaDeli.jpg',
-                    applyImageRadius: true,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(AppWidget.productImageRadius),
+                    child: Image.network(
+                      validImageUrl.isNotEmpty ? validImageUrl : '',
+                      height: 150,
+                      width: 150,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   Positioned(
                     top: 8,
                     child: RoundedContainer(
                       Radius: AppWidget.sm,
-                      backgroundColor:
-                      AppWidget.secondaryColor.withOpacity(0.8),
+                      backgroundColor: AppWidget.secondaryColor.withOpacity(0.8),
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppWidget.sm,
                         vertical: AppWidget.xs,
                       ),
+
                       child: Text(
-                        '25%',
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelLarge!
-                            .apply(color: AppWidget.blackColor),
+                        '${widget.ds['discount'] ?? 0}%',
+                        style: Theme.of(context).textTheme.labelLarge!.apply(color: AppWidget.blackColor),
                       ),
                     ),
                   ),
@@ -71,49 +80,35 @@ class _ProductCardVerticalState extends State<ProductCardVertical> {
                     right: 0,
                     child: GestureDetector(
                       onTap: () {
-                        if (!isFavorited) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: const Text('Your Item Is Added to Wishlist'),
-                            action: SnackBarAction(
-                              label: 'View',
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const FavoriteScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                            duration: const Duration(seconds: 3),
-                          ));
-                        }
                         setState(() {
                           isFavorited = !isFavorited;
                         });
+
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(isFavorited
+                              ? 'Your Item Is Added to Wishlist'
+                              : 'Your Item Is Removed from Wishlist'),
+                          action: SnackBarAction(
+                            label: 'View',
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FavoriteScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          duration: const Duration(seconds: 3),
+                        ));
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          color: AppWidget.primaryColor,
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(AppWidget.cardRadiusMd),
-                            bottomLeft: Radius.circular(AppWidget.productImageRadius),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 4,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: CircleAvatar(
-                          backgroundColor: AppWidget.primaryColor,
-                          child: Icon(
-                            isFavorited ? Icons.favorite : Icons.favorite_outline,
-                            color: Colors.white,
-                          ),
+                      child: CircleAvatar(
+                        backgroundColor: AppWidget.primaryColor,
+                        child: Icon(
+                          isFavorited
+                              ? Icons.favorite
+                              : Icons.favorite_outline,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -121,26 +116,25 @@ class _ProductCardVerticalState extends State<ProductCardVertical> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: AppWidget.spaceBtwItemsSm/1.1,
-            ),
+            const SizedBox(height: AppWidget.spaceBtwItems * 1.8),
             Padding(
-              padding: const EdgeInsets.only(left: AppWidget.sm),
+              padding: const EdgeInsets.only(
+                left: AppWidget.sm,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const ProductTitleText(title: 'Veg Pizza'),
-                  const SizedBox(
-                    height: AppWidget.spaceBtwItems / 2,
-                  ),
-                  const BrandTitleText(title: 'KFC'),
+                  ProductTitleText(title: widget.ds['name'] ?? 'Unknown Product'),
+                  const SizedBox(height: AppWidget.spaceBtwItems / 2),
+                  BrandTitleText(title: widget.ds['brand'] ?? 'Unknown Brand'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const TProductPriceText(price: '200'),
+                      TProductPriceText(price: widget.ds['price'] ?? '0'),
                       GestureDetector(
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
                             content: Text('Your Item Is Added on Cart'),
                             duration: Duration(seconds: 3),
                           ));
@@ -150,18 +144,14 @@ class _ProductCardVerticalState extends State<ProductCardVertical> {
                             color: AppWidget.darkColor,
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(AppWidget.cardRadiusMd),
-                              bottomRight:
-                              Radius.circular(AppWidget.productImageRadius),
+                              bottomRight: Radius.circular(AppWidget.productImageRadius),
                             ),
                           ),
                           child: const SizedBox(
                             width: AppWidget.iconLg * 1.2,
                             height: AppWidget.iconLg * 1.2,
                             child: Center(
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.white,
-                              ),
+                              child: Icon(Icons.add, color: Colors.white),
                             ),
                           ),
                         ),

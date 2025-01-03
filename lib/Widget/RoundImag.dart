@@ -14,7 +14,7 @@ class FRoundImage extends StatelessWidget {
     this.applyImageRadius = true,
     this.fit = BoxFit.contain,
     this.backgroundColor = Colors.white,
-    this.isNetworkImage=false,
+    this.isNetworkImage= false,
     required this.imageUrl,
     this.borderRadius=AppWidget.md,
   });

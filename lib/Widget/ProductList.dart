@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../AllScreen/Datiles.dart';
 import '../AllScreen/Favorite.dart';
 import 'AppWidget.dart';
@@ -20,8 +21,8 @@ class _ProductListState extends State<ProductList> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const DetailsScreen()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => DetailsScreen(details: '', image: '', name: '', price: '', brand: '',)));
       },
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -44,26 +45,29 @@ class _ProductListState extends State<ProductList> {
             // Product Image with Discount Badge
             Stack(
               children: [
-                // Product Image
+                /// Product Image
                 Container(
                   height: 100,
                   width: 100,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: Colors.grey.shade200,
-                    image: const DecorationImage(
-                      image: AssetImage('Assets/Images/ProductImage/PizaaDeli.jpg'),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(AppWidget.productImageRadius),
+                    child: Image.asset(
+                      'assets/Images/ProductImages/butter-chicken.jpg',
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                // Discount Badge
+                ///Discount Badge
                 Positioned(
                   top: 0,
                   left: 0,
                   child: Container(
                     padding:
-                    const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                     decoration: BoxDecoration(
                       color: Colors.yellow,
                       borderRadius: BorderRadius.circular(8),
@@ -100,14 +104,15 @@ class _ProductListState extends State<ProductList> {
                           if (!isFavorited) {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content:
-                              const Text('Your Item Is Added to Wishlist'),
+                                  const Text('Your Item Is Added to Wishlist'),
                               action: SnackBarAction(
                                 label: 'View',
                                 onPressed: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const FavoriteScreen(),
+                                      builder: (context) =>
+                                          const FavoriteScreen(),
                                     ),
                                   );
                                 },
@@ -158,9 +163,9 @@ class _ProductListState extends State<ProductList> {
                       GestureDetector(
                         onTap: () {
                           {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content:
-                              Text('Your Item Is Added to on Cart'),
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text('Your Item Is Added to on Cart'),
                               duration: Duration(seconds: 3),
                             ));
                           }
@@ -173,7 +178,7 @@ class _ProductListState extends State<ProductList> {
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(AppWidget.cardRadiusMd),
                               bottomRight:
-                              Radius.circular(AppWidget.productImageRadius),
+                                  Radius.circular(AppWidget.productImageRadius),
                             ),
                           ),
                           child: const Icon(

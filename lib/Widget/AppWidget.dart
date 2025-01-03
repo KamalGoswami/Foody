@@ -9,11 +9,25 @@ class AppWidget {
         fontWeight: FontWeight.bold,
         fontFamily: 'Poppins');
   }
+  static TextStyle AllboldTextFieldStyle() {
+    return const TextStyle(
+        fontSize: 18.0,
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'Poppins');
+  }
 
   static TextStyle AppBarTextStyle() {
     return const TextStyle(
         fontSize: 22.0,
         color: Colors.black,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'Poppins');
+  }
+  static TextStyle AppBarColorTextStyle() {
+    return const TextStyle(
+        fontSize: 22.0,
+        color: primaryColor,
         fontWeight: FontWeight.bold,
         fontFamily: 'Poppins');
   }
@@ -155,7 +169,7 @@ class AppWidget {
   static const double cardElevation = 2.0;
 
   //grid view spacing
-  static const double gridviewSpacing = 16.0;
+  static const double gridviewSpacing = 12.0;
 
   // Colors
   // Primary and Secondary Colors

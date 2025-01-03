@@ -17,23 +17,19 @@ class _SplashState extends State<Splash> {
   void initState() {
     super.initState();
 
-    // Navigate based on user authentication state after a 3-second delay
+
     Timer(const Duration(seconds: 3), () async {
       final user = Supabase.instance.client.auth.currentUser;
 
       if (user != null) {
-        // User is logged in; navigate to BottomNav
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => BottomNav(
-              userId: user.id,
-              userName: user.userMetadata?['username'] ?? 'User',
+            builder: (context) => const BottomNav(
             ),
           ),
         );
       } else {
-        // User is not logged in; navigate to LoginScreen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -51,7 +47,7 @@ class _SplashState extends State<Splash> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image(image: AssetImage('Assets/Images/Logo/FoodyLogo.png')),
+                Image(image: AssetImage('assets/Images/SocialMedia/FoodyLogo.png')),
               ],
             ),
           ),

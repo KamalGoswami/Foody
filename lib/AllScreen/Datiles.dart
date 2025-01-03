@@ -1,21 +1,93 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:foode/Services/Database.dart';
+import 'package:foode/Services/SharedPrefancehelper.dart';
+import 'package:lottie/lottie.dart';
+import '../Cart/Widget/SuccessBottom.dart';
 import '../Widget/AppWidget.dart';
 import '../Widget/BrandTitle.dart';
 import '../Widget/ProductPrice.dart';
 import '../Widget/ProuductTitle.dart';
+import '../main.dart';
 import 'Favorite.dart';
 
 class DetailsScreen extends StatefulWidget {
-  const DetailsScreen({super.key});
+  String image, name, details, price, brand;
+
+  DetailsScreen({
+    super.key,
+    required this.details,
+    required this.image,
+    required this.name,
+    required this.price,
+    required this.brand,
+  });
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-  int quantity = 1;
-  bool isExpanded = false; // State to manage "Read More" functionality
-  bool isFavorited = false; // State to track the favorite button
+  int quantity = 1, total = 0;
+  bool isExpanded = false;
+  bool isFavorited = false;
+  String? id;
+  bool isLoading = false;
+
+  Future<void> getSharedPreferences() async {
+    id = await SharedPreferencesHelper().getUserId();
+    setState(() {});
+  }
+
+  //Future<void> uploadFoodOnCart() async {
+  //  if (id == null || widget.name.isEmpty || widget.price.isEmpty) {
+  //    ScaffoldMessenger.of(context).showSnackBar(
+  //      const SnackBar(
+  //        backgroundColor: Colors.red,
+  //        content: Text("User ID or Product information missing."),
+  //      ),
+  //    );
+  //    return;
+  //  }
+//
+  //  setState(() {
+  //    isLoading = true;
+  //  });
+//
+  //  try {
+  //    Map<String, dynamic> addItem = {
+  //      "name": widget.name,
+  //      "image": widget.image,
+  //      "price": widget.price,
+  //      "details": widget.details,
+  //      "brand": widget.brand,
+  //      "quantity": quantity,
+  //    };
+//
+  //    await supabase.from('NewCart').insert(addItem);
+//
+  //    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //      backgroundColor: Colors.blue,
+  //      content: Text("Product added to cart successfully."),
+  //    ));
+  //  } catch (e) {
+  //    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //      backgroundColor: Colors.red,
+  //      content: Text("Error adding product to cart: $e"),
+  //    ));
+  //  } finally {
+  //    setState(() {
+  //      isLoading = false;
+  //    });
+  //  }
+  //}
+
+  @override
+  void initState() {
+    super.initState();
+    getSharedPreferences();
+    total = int.parse(widget.price);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,30 +99,40 @@ class _DetailsScreenState extends State<DetailsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 390,
-                  child: Padding(
-                    padding: EdgeInsets.all(AppWidget.productImageRadius * 1.3),
-                    child: Center(
-                      child: Image(image: AssetImage('Assets/Images/ProductImage/Momos.jpg')),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  child: Center(
+                    child: Hero(
+                      tag: 'Hello',
+                      child: CachedNetworkImage(
+                        imageUrl: widget.image,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Center(
+                          child: Lottie.asset(
+                            'assets/Animations/ImageLoadAnimation.json',
+                            height: 50,
+                            width: 50,
+                            repeat: true,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                      ),
                     ),
                   ),
                 ),
                 Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const ProductTitleText(title: 'Pizza'),
+                      ProductTitleText(title: widget.name),
                       const SizedBox(height: AppWidget.spaceBtwItemsSm),
-                      const SizedBox(height: AppWidget.spaceBtwItems),
                       SizedBox(
                         height: 50,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const BrandTitleText(title: 'KFC'),
+                            BrandTitleText(title: widget.brand),
                             const VerticalDivider(
                               color: AppWidget.primaryColor,
                               thickness: 2,
@@ -58,16 +140,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               indent: 15,
                               endIndent: 15,
                             ),
-                            Text("15 mins",
+                            Text("35 mins to 45 mins",
                                 style: AppWidget.subBoldTextFieldStyle()),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: AppWidget.defaultSpace - 2),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const TProductPriceText(price: '50'),
+                          TProductPriceText(price: widget.price),
                           Row(
                             children: [
                               GestureDetector(
@@ -75,6 +157,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   if (quantity > 1) {
                                     setState(() {
                                       quantity--;
+                                      total -= int.parse(widget.price);
                                     });
                                   }
                                 },
@@ -103,6 +186,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 onTap: () {
                                   setState(() {
                                     quantity++;
+                                    total += int.parse(widget.price);
                                   });
                                 },
                                 child: Container(
@@ -121,7 +205,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      const Divider(thickness: 1),
+                      const SizedBox(height: AppWidget.defaultSpace - 2),
                       const Text(
                         "About Food",
                         style: TextStyle(
@@ -131,35 +216,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         ),
                       ),
                       const SizedBox(height: AppWidget.defaultSpace),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            isExpanded
-                                ? "Popular donburi dish consisting of Chicken and onion served over a bowl of rice. The meat and onion are cooked in a mixture of soy sauce, mirin, sugar and sake, giving the dish a unique sweet and savory flavor what is the error what is the error what is the error."
-                                : "Popular donburi dish consisting of Chicken and onion served over a bowl of rice. The meat and onion are cooked in a mixture of soy sauce, mirin, sugar and sake, giving the dish a unique sweet...",
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.grey),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isExpanded = !isExpanded;
-                              });
-                            },
-                            child: Text(
-                              isExpanded ? "Read Less" : "Read More",
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: AppWidget.primaryColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      const Divider(thickness: 1),
+                      Text(widget.details),
                     ],
                   ),
                 ),
@@ -179,75 +236,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
               ),
             ),
           ),
-          Positioned(
-            top: 45,
-            right: 20,
-            child: GestureDetector(
-              onTap: () {
-                if (!isFavorited) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text('Your Item Is Added to Wishlist'),
-                    action: SnackBarAction(
-                      label: 'View',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const FavoriteScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    duration: const Duration(seconds: 3),
-                  ));
-                }
-                setState(() {
-                  isFavorited = !isFavorited;
-                });
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  // Background color for visibility
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 4,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    isFavorited ? Icons.favorite : Icons.favorite_outline,
-                    color: isFavorited ? Colors.red : AppWidget.primaryColor,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 105,
-            right: 20,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 4,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: const CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(Icons.share, color: AppWidget.primaryColor),
-              ),
-            ),
-          ),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -259,50 +247,29 @@ class _DetailsScreenState extends State<DetailsScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text("Total Price", style: AppWidget.subBoldTextFieldStyle()),
                   Text(
-                    "Total Price",
-                    style: AppWidget.subBoldTextFieldStyle(),
+                    "₹${(quantity * int.parse(widget.price)).toStringAsFixed(2)}",
+                    style: AppWidget.AppBarTextStyle(),
                   ),
-                  Text("₹${(quantity * 50).toStringAsFixed(2)}",
-                      style: AppWidget.AppBarTextStyle()),
                 ],
               ),
               GestureDetector(
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text(
-                        'SuccessFully Added',
-                        style: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w300,
-                            fontFamily: 'Poppins'),
-                      )));
-                },
+                onTap: (){ showOrderSuccessModal(context);
+                },//uploadFoodOnCart,
                 child: Container(
-                  width: MediaQuery.of(context).size.width / 2,
+                  width: MediaQuery.of(context).size.width /2,
+                  height: MediaQuery.of(context).size.height /2,
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: AppWidget.primaryColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Add To Cart", style: AppWidget.AddToCartText()),
-                      const SizedBox(width: AppWidget.spaceBtwItems),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppWidget.primaryColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(
-                          Icons.shopping_cart_outlined,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(width: AppWidget.spaceBtwItems),
+                      Text("Place Order", style: AppWidget.AddToCartText()),
+                      const Icon(Icons.shopping_cart_outlined, color: Colors.white),
                     ],
                   ),
                 ),

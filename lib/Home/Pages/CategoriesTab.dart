@@ -23,14 +23,14 @@ class CategoriesTab extends StatelessWidget {
               const SizedBox(height: AppWidget.spaceBtwItems),
               GridLayoutView(
                 itemCount: 8,
-                itemBuilder: (_, index) => const ProductCardVertical(),
+                itemBuilder: (_, index) => const ProductCardVertical(ds: {},),
               ),
               const SizedBox(height: AppWidget.spaceBtwSections),
               const SectionHeading(title: 'Paneer Pizza', showActionButton: false),
               const SizedBox(height: AppWidget.spaceBtwSections,),
               GridLayoutView(
                 itemCount: 8,
-                itemBuilder: (_, index) => const ProductCardVertical(),
+                itemBuilder: (_, index) => const ProductCardVertical(ds: {},),
               ),
             ],
           ),

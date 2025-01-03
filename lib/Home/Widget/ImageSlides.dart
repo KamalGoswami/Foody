@@ -33,15 +33,15 @@ class _ImageSliderState extends State<ImageSlider> {
             options: CarouselOptions(
               viewportFraction: 1,
               autoPlay: true,
-              autoPlayInterval: widget.autoPlayDuration, // Use configurable duration
+              autoPlayInterval: widget.autoPlayDuration,
               onPageChanged: (index, reason) {
                 setState(() {
-                  currentSlide = index; // Update active slide
+                  currentSlide = index;
                 });
               },
             ),
             items: widget.imageUrls.map((url) {
-              return FRoundImage(imageUrl: url); // Use the passed image URLs
+              return FRoundImage(imageUrl: url);
             }).toList(),
           ),
           const SizedBox(height: AppWidget.spaceBtwItems),
@@ -54,8 +54,8 @@ class _ImageSliderState extends State<ImageSlider> {
                 height: 4,
                 margin: const EdgeInsets.only(right: 10),
                 backgroundColor: index == currentSlide
-                    ? AppWidget.primaryColor // Highlight active slide
-                    : Colors.grey, // Inactive slides
+                    ? AppWidget.primaryColor
+                    : Colors.grey, //
               );
             }),
           ),
