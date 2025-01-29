@@ -4,13 +4,26 @@ import '../../Widget/AppWidget.dart';
 import '../../Widget/BrandTitle.dart';
 import '../../Widget/ProuductTitle.dart';
 import '../../Widget/RoundImag.dart';
+import '../../main.dart';
 
 
-class TCartItem extends StatelessWidget {
+class TCartItem extends StatefulWidget {
   const TCartItem({
     super.key,
   });
 
+  @override
+  State<TCartItem> createState() => _TCartItemState();
+}
+
+late Stream<List<Map<String, dynamic>>> fooditemStream;
+
+void OnAdd() {
+  fooditemStream = supabase.from('products').stream(primaryKey: ['id']).map(
+          (data) => data.map((e) => e as Map<String, dynamic>).toList());
+}
+
+class _TCartItemState extends State<TCartItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:foode/Services/SharedPrefancehelper.dart';
 import 'package:lottie/lottie.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../../AllScreen/Datiles.dart';
 import '../../AllScreen/Favorite.dart';
 import '../../Widget/AppWidget.dart';

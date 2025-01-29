@@ -1,15 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:foode/Cart/Pages/Cart.dart';
 import 'package:foode/Services/Database.dart';
 import 'package:foode/Services/SharedPrefancehelper.dart';
 import 'package:lottie/lottie.dart';
-import '../Cart/Widget/SuccessBottom.dart';
 import '../Widget/AppWidget.dart';
 import '../Widget/BrandTitle.dart';
 import '../Widget/ProductPrice.dart';
 import '../Widget/ProuductTitle.dart';
 import '../main.dart';
-import 'Favorite.dart';
 
 class DetailsScreen extends StatefulWidget {
   String image, name, details, price, brand;
@@ -39,48 +38,57 @@ class _DetailsScreenState extends State<DetailsScreen> {
     setState(() {});
   }
 
-  //Future<void> uploadFoodOnCart() async {
-  //  if (id == null || widget.name.isEmpty || widget.price.isEmpty) {
-  //    ScaffoldMessenger.of(context).showSnackBar(
-  //      const SnackBar(
-  //        backgroundColor: Colors.red,
-  //        content: Text("User ID or Product information missing."),
-  //      ),
-  //    );
-  //    return;
-  //  }
-//
-  //  setState(() {
-  //    isLoading = true;
-  //  });
-//
-  //  try {
-  //    Map<String, dynamic> addItem = {
-  //      "name": widget.name,
-  //      "image": widget.image,
-  //      "price": widget.price,
-  //      "details": widget.details,
-  //      "brand": widget.brand,
-  //      "quantity": quantity,
-  //    };
-//
-  //    await supabase.from('NewCart').insert(addItem);
-//
-  //    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //      backgroundColor: Colors.blue,
-  //      content: Text("Product added to cart successfully."),
-  //    ));
-  //  } catch (e) {
-  //    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //      backgroundColor: Colors.red,
-  //      content: Text("Error adding product to cart: $e"),
-  //    ));
-  //  } finally {
-  //    setState(() {
-  //      isLoading = false;
-  //    });
-  //  }
-  //}
+  Future<void> uploadFoodOnCart() async {
+    if (id == null || widget.name.isEmpty || widget.price.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text("User ID or Product information missing."),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      // Create the data to be added to the 'FCart' table
+      Map<String, dynamic> addItem = {
+        "name": widget.name,
+        "image": widget.image,
+        "price": widget.price,
+        "Quantity": quantity,
+        "brand":widget.brand,
+        "created_at": DateTime.now().toIso8601String(),
+      };
+
+      // Insert the data into the Supabase table
+      await supabase.from('FCart').insert(addItem);
+
+      // Display success message
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Colors.blue,
+        content: const Text("Product added to cart successfully."),
+        action: SnackBarAction(label: "View", onPressed: (){
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const CartScreen()));
+        }),
+      ));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Colors.red,
+        content: Text("Error adding product to cart: $e"),
+      ));
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -255,11 +263,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 ],
               ),
               GestureDetector(
-                onTap: (){ showOrderSuccessModal(context);
-                },//uploadFoodOnCart,
+                onTap: uploadFoodOnCart,
                 child: Container(
-                  width: MediaQuery.of(context).size.width /2,
-                  height: MediaQuery.of(context).size.height /2,
+                  width: MediaQuery.of(context).size.width / 2,
+                  height: 50,
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: AppWidget.primaryColor,
@@ -268,7 +275,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Place Order", style: AppWidget.AddToCartText()),
+                      Text("Add to Cart", style: AppWidget.AddToCartText()),
+                      const SizedBox(width: 4),
                       const Icon(Icons.shopping_cart_outlined, color: Colors.white),
                     ],
                   ),

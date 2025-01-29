@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:foode/Services/Database.dart';
 import 'package:foode/Widget/AppWidget.dart';
@@ -89,7 +88,6 @@ class _AddFoodState extends State<AddFood> {
           content: Text("Product uploaded successfully"),
         ));
       } catch (e) {
-        // Show error message
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: Colors.red,
           content: Text("Error uploading product: $e"),
@@ -100,7 +98,6 @@ class _AddFoodState extends State<AddFood> {
         });
       }
     } else {
-      // Show validation error
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         backgroundColor: Colors.red,
         content: Text("Please fill in all fields and select an image."),

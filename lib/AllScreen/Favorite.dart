@@ -10,8 +10,8 @@ class FavoriteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Simulated dynamic data source for the wishlist
-    final List<Productcardhorizontal> wishlistItems = []; // Initially empty
+
+    final List<Productcardhorizontal> wishlistItems = [];
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -50,7 +50,6 @@ class FavoriteScreen extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: AppWidget.lg,left: AppWidget.xl,right: AppWidget.xl,top: AppWidget.sm),
             child: CustomElevatedButton(
               onPressed: () {
-                // Navigate to the shopping screen or other action
                 Navigator.push(context,MaterialPageRoute(builder: (context)=>const BottomNav()));
               },
               text: 'Continue Shopping',

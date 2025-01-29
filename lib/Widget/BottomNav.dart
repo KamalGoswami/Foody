@@ -1,4 +1,3 @@
-
 import 'package:curved_navigation_bar_with_label/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import '../AllScreen/Favorite.dart';
