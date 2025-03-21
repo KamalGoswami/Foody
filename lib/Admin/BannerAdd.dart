@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:foode/Widget/AppWidget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:random_string/random_string.dart';
 import '../main.dart';
@@ -38,7 +39,7 @@ class _BanneraddState extends State<Banneradd> {
 
         // Prepare data for database insertion
         Map<String, dynamic> addBanner = {
-          "image": imageUrl,
+          "banner": imageUrl,
         };
 
         // Insert the banner data into Supabase table
@@ -61,7 +62,7 @@ class _BanneraddState extends State<Banneradd> {
         ));
       } finally {
         setState(() {
-          isLoading = false; // Ensure loading state is reset
+          isLoading = false;
         });
       }
     } else {
@@ -131,7 +132,7 @@ class _BanneraddState extends State<Banneradd> {
             ElevatedButton(
               onPressed: isLoading ? null : uploadBanner,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: AppWidget.primaryColor,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               child: isLoading
@@ -140,7 +141,7 @@ class _BanneraddState extends State<Banneradd> {
               )
                   : const Text(
                 "Upload Banner",
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16,color: Colors.white70),
               ),
             ),
           ],

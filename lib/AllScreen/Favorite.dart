@@ -27,7 +27,7 @@ class FavoriteScreen extends StatelessWidget {
     );
   }
 
-  // Build the empty wishlist UI
+
   Widget _buildEmptyWishlist(BuildContext context) {
     return Center(
       child: Column(

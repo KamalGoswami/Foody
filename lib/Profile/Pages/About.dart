@@ -89,13 +89,12 @@ class _AboutState extends State<About> {
           child: Column(
             children: [
               const Text(
-                '''
-Foody is a dynamic food ordering app designed to streamline the process of ordering food and managing food-related services. Developed by Kuldeep and Anubhav, this app aims to provide a seamless user experience for both customers and administrators. The app offers an intuitive interface for users to browse through a variety of food items, add them to their cart, and place orders with just a few taps.''',
+                '''       Foody is a dynamic food ordering app designed to streamline the process of ordering food and managing food-related services. Developed by Kuldeep and Anubhav, this app aims to provide a seamless user experience for both customers and administrators. The app offers an intuitive interface for users to browse through a variety of food items, add them to their cart, and place orders with just a few taps.''',
               ),
               const SizedBox(height: AppWidget.spaceBtwItems),
               const Text('''       The core functionality of 'Foody' revolves around simplifying the food ordering experience for users, offering features such as real-time updates on order status, a user-friendly checkout process, and payment gateway integration for smooth transactions. Customers can easily search for restaurants, view menus, and customize their orders based on preferences. Additionally, the app supports multiple payment methods for convenience.'''),
               const SizedBox(height: AppWidget.spaceBtwItems),
-              const Text(''''      From the admin side, 'Foody' provides a comprehensive admin panel that allows restaurant owners and managers to efficiently manage orders, track deliveries, update menus, and monitor inventory. The admin panel also enables the creation and management of special offers and promotions, ensuring restaurant owners can boost customer engagement and satisfaction.'''),
+              const Text('''      From the admin side, 'Foody' provides a comprehensive admin panel that allows restaurant owners and managers to efficiently manage orders, track deliveries, update menus, and monitor inventory. The admin panel also enables the creation and management of special offers and promotions, ensuring restaurant owners can boost customer engagement and satisfaction.'''),
               const SizedBox(height: AppWidget.spaceBtwItems),
               const Text('''       Both Kuldeep and Anubhav worked collaboratively to ensure the app's performance, security, and user experience are optimized. The development focuses on providing a robust and scalable solution that can handle high traffic and ensure timely order deliveries. The goal of 'Foody' is to revolutionize food ordering by offering a streamlined solution for users and a powerful management tool for restaurant administrators.'''),
               const SizedBox(height: AppWidget.spaceBtwItems),

@@ -62,137 +62,139 @@ class _AdminLoginState extends State<AdminLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        Container(
-            margin:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height / 2),
-            padding: const EdgeInsets.only(top: 45.0, left: 20.0, right: 20.0),
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color.fromARGB(255, 53, 51, 51), Colors.black87],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.vertical(
-                top:
-                    Radius.elliptical(MediaQuery.of(context).size.width, 110.0),
-              ),
-            )),
-        Container(
-          margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 160.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const LoginHeader(
-                title: "Let's start with\n      Admin",
-              ),
-              const SizedBox(
-                height: AppWidget.defaultSpace,
-              ),
-              Material(
-                elevation: 3.0,
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  height: MediaQuery.of(context).size.height / 2.2,
-                  decoration: BoxDecoration(
-                    color: AppWidget.primaryColor.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppWidget.defaultSpace),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        TextField(
-                          controller: _usernameController,
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(
-                              Icons.person,
-                              color: AppWidget.primaryColor,
-                            ),
-                            labelText: 'Username',
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: AppWidget.primaryColor),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppWidget.defaultSpace),
-                        TextField(
-                          controller: _passwordController,
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(
-                              Icons.password,
-                              color: AppWidget.primaryColor,
-                            ),
-                            labelText: 'Password',
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _isPasswordVisible = !_isPasswordVisible;
-                                });
-                              },
-                              icon: Icon(
-                                _isPasswordVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
+      body: SingleChildScrollView(
+        child: Stack(children: [
+          Container(
+              margin:
+                  EdgeInsets.only(top: MediaQuery.of(context).size.height / 2),
+              padding: const EdgeInsets.only(top: 45.0, left: 20.0, right: 20.0),
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color.fromARGB(255, 53, 51, 51), Colors.black87],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.vertical(
+                  top:
+                      Radius.elliptical(MediaQuery.of(context).size.width, 110.0),
+                ),
+              )),
+          Container(
+            margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 160.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const LoginHeader(
+                  title: "Let's start with\n      Admin",
+                ),
+                const SizedBox(
+                  height: AppWidget.defaultSpace,
+                ),
+                Material(
+                  elevation: 3.0,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 2.2,
+                    decoration: BoxDecoration(
+                      color: AppWidget.primaryColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppWidget.defaultSpace),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          TextField(
+                            controller: _usernameController,
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(
+                                Icons.person,
+                                color: AppWidget.primaryColor,
+                              ),
+                              labelText: 'Username',
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: AppWidget.primaryColor),
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: AppWidget.primaryColor),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
                           ),
-                          obscureText: !_isPasswordVisible,
-                        ),
-                        const SizedBox(height: AppWidget.defaultSpace),
-                        SizedBox(width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _isLoading ? null : loginAdmin,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppWidget.primaryColor,
-                              foregroundColor: Colors.white,
-                              elevation: 5,
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
+                          const SizedBox(height: AppWidget.defaultSpace),
+                          TextField(
+                            controller: _passwordController,
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(
+                                Icons.password,
+                                color: AppWidget.primaryColor,
+                              ),
+                              labelText: 'Password',
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isPasswordVisible = !_isPasswordVisible;
+                                  });
+                                },
+                                icon: Icon(
+                                  _isPasswordVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: AppWidget.primaryColor),
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: _isLoading
-                                ? const CircularProgressIndicator(
-                                    color: Colors.white)
-                                : const Text('Login'),
+                            obscureText: !_isPasswordVisible,
                           ),
-                        ),
-                        const SizedBox(height: AppWidget.spaceBtwItemsSm,),
-                        if (_errorMessage != null)
-                          Text(
-                            _errorMessage!,
-                            style: const TextStyle(color: Colors.red),maxLines: 2,
+                          const SizedBox(height: AppWidget.defaultSpace),
+                          SizedBox(width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _isLoading ? null : loginAdmin,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppWidget.primaryColor,
+                                foregroundColor: Colors.white,
+                                elevation: 5,
+                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              child: _isLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white)
+                                  : const Text('Login'),
+                            ),
                           ),
-                      ],
+                          const SizedBox(height: AppWidget.spaceBtwItemsSm,),
+                          if (_errorMessage != null)
+                            Text(
+                              _errorMessage!,
+                              style: const TextStyle(color: Colors.red),maxLines: 2,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 

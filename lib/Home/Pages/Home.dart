@@ -38,6 +38,8 @@ class HomeScreenState extends State<HomeScreen>
 
   late Stream<List<Map<String, dynamic>>> fooditemListStream;
 
+  late Stream<List<Map<String, dynamic>>> bannerStream;
+
   Future<void> getSharedPrefs() async {
     name = await SharedPreferencesHelper().getUserName() ?? 'User Name';
     setState(() {
@@ -55,12 +57,18 @@ class HomeScreenState extends State<HomeScreen>
         (data) => data.map((e) => e as Map<String, dynamic>).toList());
   }
 
+  void bannerload() {
+    bannerStream = supabase.from('Banner').stream(primaryKey: ['id']).map(
+            (data) => data.map((e) => e as Map<String, dynamic>).toList());
+  }
+
   @override
   void initState() {
     super.initState();
     getSharedPrefs();
     onTheLoad();
     onTheLoadList();
+    bannerload();
   }
 
   Widget allItems() {
@@ -606,14 +614,32 @@ class HomeScreenState extends State<HomeScreen>
                       ),
                     ),
                     const SizedBox(height: AppWidget.spaceBtwItems),
-                    const ImageSlider(
-                      imageUrls: [
-                        'assets/Images/ImageSlider/slider7.png',
-                        'assets/Images/ImageSlider/slider8.png',
-                        'assets/Images/ImageSlider/slider3.png',
-                      ],
-                      autoPlayDuration: Duration(seconds: 5),
+
+                    /// Banner Slider - Dynamic from Supabase
+
+
+                    StreamBuilder<List<Map<String, dynamic>>>(
+                      stream: bannerStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+
+                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Center(child: Text('No banners available.'));
+                        }
+
+                        List<String> bannerImages = snapshot.data!
+                            .map((banner) => banner['banner'] as String)
+                            .toList();
+
+                        return ImageSlider(
+                          imageUrls: bannerImages, // Dynamic banner images
+                          autoPlayDuration: const Duration(seconds: 5),
+                        );
+                      },
                     ),
+
                     const SizedBox(height: AppWidget.defaultSpace),
                     SizedBox(
                       height: 300,

@@ -4,7 +4,6 @@ import 'package:foode/AllScreen/Favorite.dart';
 import 'package:foode/Cart/Pages/Cart.dart';
 import '../Home/Pages/home.dart';
 import '../Profile/Pages/Profile.dart';
-
 import 'AppWidget.dart';
 
 class BottomNav extends StatefulWidget {
@@ -16,7 +15,7 @@ class BottomNav extends StatefulWidget {
 
 class BottomNavState extends State<BottomNav> {
   int currentTabIndex = 0;
-  bool isSidebarVisible = true; // Sidebar visibility toggle
+  bool isSidebarVisible = true;
 
   late List<Widget> pages;
   late Widget currentPage;

@@ -24,7 +24,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Foody',
       theme: ThemeData(
-
         colorScheme: const ColorScheme.light(primary: AppWidget.primaryColor),
         useMaterial3: true,
       ),
