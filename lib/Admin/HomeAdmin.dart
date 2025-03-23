@@ -15,19 +15,13 @@ class _HomeadminState extends State<Homeadmin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Home Admin',style:TextStyle(fontSize: 22.0,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Poppins'),),centerTitle: true,),
         body: Container(
       margin: const EdgeInsets.only(top: 50.0, right: 20.0, left: 20.0),
       child: Column(
         children: [
-          Center(
-            child: Text(
-              'Home Admin',
-              style: AppWidget.AppBarTextStyle(),
-            ),
-          ),
-          const SizedBox(
-            height: AppWidget.defaultSpace,
-          ),
           Expanded(
             child: Center(
               child: Column(

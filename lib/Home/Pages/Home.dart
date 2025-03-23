@@ -617,7 +617,6 @@ class HomeScreenState extends State<HomeScreen>
 
                     /// Banner Slider - Dynamic from Supabase
 
-
                     StreamBuilder<List<Map<String, dynamic>>>(
                       stream: bannerStream,
                       builder: (context, snapshot) {
