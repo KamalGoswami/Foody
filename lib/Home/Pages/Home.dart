@@ -72,9 +72,6 @@ class HomeScreenState extends State<HomeScreen>
   }
 
   Widget allItems() {
-    final PageController _pageController = PageController();
-    int currentSlide = 0;
-
     return StreamBuilder<List<Map<String, dynamic>>>(
       stream: fooditemStream,
       builder: (context, snapshot) {
@@ -87,209 +84,71 @@ class HomeScreenState extends State<HomeScreen>
         }
 
         final products = snapshot.data!;
-        final totalSlides = products.length;
 
-        return SizedBox(
-          height: 270,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'For You',
-                      style: AppWidget.subBoldFieldStyle(),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Row(
-                      children: List.generate(totalSlides, (index) {
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          width: index == currentSlide ? 12 : 8,
-                          height: index == currentSlide ? 12 : 8,
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: index == currentSlide
-                                ? AppWidget.primaryColor
-                                : Colors.grey,
-                          ),
-                        );
-                      }),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppWidget.spaceBtwSections),
-              Expanded(
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: products.length,
-                  onPageChanged: (index) {
-                    currentSlide = index;
-                    (context as Element).markNeedsBuild(); // Trigger rebuild
-                  },
-                  itemBuilder: (context, index) {
-                    final product = products[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailsScreen(
-                              details: product["details"],
-                              image: product["image"],
-                              name: product["name"],
-                              price: product['price']?.toString() ?? '0.0',
-                              brand: product["brand"],
-                            ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: CachedNetworkImage(
-                                    imageUrl: product['image'] ?? '',
-                                    height: 180,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) {
-                                      return Center(
-                                        child: Lottie.asset(
-                                          'assets/Animations/ImageLoadAnimation.json',
-                                          height: 50,
-                                          width: 50,
-                                          repeat: true,
-                                        ),
-                                      );
-                                    },
-                                    errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 8,
-                                  right: 8,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        isFavorited = !isFavorited;
-                                      });
+        return ListView.builder(
+          itemCount: products.length,
+          itemBuilder: (context, index) {
+            final product = products[index];
 
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text(isFavorited
-                                            ? 'Added to Wishlist'
-                                            : 'Removed from Wishlist'),
-                                        duration: const Duration(seconds: 3),
-                                      ));
-                                    },
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      child: Icon(
-                                        isFavorited
-                                            ? Icons.favorite
-                                            : Icons.favorite_outline,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 4,
-                                  left: 4,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        content: Text('Added to Cart'),
-                                        duration: Duration(seconds: 3),
-                                      ));
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: AppWidget.darkColor,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: const SizedBox(
-                                        width: 40,
-                                        height: 40,
-                                        child: Center(
-                                          child: Icon(Icons.add,
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12.0, vertical: 8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            product['name'] ?? 'Unknown Product',
-                                            style: AppWidget.subBoldFieldStyle(),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            product['brand'] ?? 'Unknown Brand',
-                                            style: AppWidget.subTextFieldStyle()
-                                                .copyWith(color: Colors.grey),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        '₹${product['price']?.toString() ?? '0'}',
-                                        style: AppWidget.subBoldFieldStyle(),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+            return FutureBuilder<List<Map<String, dynamic>>>(
+              future: supabase
+                  .from('wishlist')
+                  .select()
+                  .eq('product_id', product['id']),
+              builder: (context, snapshot) {
+                bool isFavorited = snapshot.hasData && snapshot.data!.isNotEmpty;
+
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                  child: ListTile(
+                    leading: CachedNetworkImage(
+                      imageUrl: product['image'] ?? '',
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Lottie.asset(
+                        'assets/Animations/ImageLoadAnimation.json',
+                        height: 30,
+                        width: 30,
                       ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+                      errorWidget: (context, url, error) =>
+                      const Icon(Icons.error),
+                    ),
+                    title: Text(product['name'] ?? 'Unknown'),
+                    subtitle: Text('₹${product['price']?.toString() ?? '0'}'),
+                    trailing: IconButton(
+                      icon: Icon(
+                        isFavorited ? Icons.favorite : Icons.favorite_outline,
+                        color: isFavorited ? Colors.red : Colors.grey,
+                      ),
+                      onPressed: () async {
+                        final userId = supabase.auth.currentUser?.id;
+                        if (userId == null) return;
+
+                        if (isFavorited) {
+                          await supabase
+                              .from('wishlist')
+                              .delete()
+                              .eq('user_id', userId)
+                              .eq('product_id', product['id']);
+                        } else {
+                          await supabase.from('wishlist').insert({
+                            'user_id': userId,
+                            'product_id': product['id'],
+                            'name': product["name"],
+                            'image': product["image"],
+                            'price': product['price'],
+                            'brand': product["brand"]
+                          });
+                        }
+                        setState(() {}); // Refresh UI
+                      },
+                    ),
+                  ),
+                );
+              },
+            );
+          },
         );
       },
     );
@@ -663,6 +522,7 @@ class HomeScreenState extends State<HomeScreen>
                       ),
                     ),
                     const SizedBox(height: AppWidget.spaceBtwItems),
+                    Center(child: CircularProgressIndicator())
                   ],
                 ),
               ),
